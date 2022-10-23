@@ -28,19 +28,68 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
+// Helper function
+bool isVowel(char ch){
+    return (ch == 'a' || ch == 'e'
+            || ch == 'i' || ch == 'o'
+            || ch == 'u');
+}
 
 
+// Given
+vector<int> hasVowels(vector<string> strArr, vector<string> query){
+    
+    vector<int> to_be_returned(query.size(), 0);
+    
+    // Making the bool array
+    vector<int> satisfied(strArr.size(), 0);
+    for (size_t i = 0; i < strArr.size(); i++){
+        
+        char firstCharacter = strArr[i][0];
+        char secondCharacter = strArr[i][strArr.size() - 2];
+        
 
+        if (isVowel(firstCharacter) && isVowel(secondCharacter)) {
+            satisfied[i] = 1;
+        }
 
+    }
+    
+    // Making the running sum
+    for (size_t i = 1; i < satisfied.size(); i++){
+        satisfied[i] += satisfied[i - 1];
+    }
 
+    // Storing the value
+    for (size_t i = 0; i < query.size(); i++){
+        
+        int firstNumber = query[i][0];
+        int secondNumber = query[i][2];
+        
+        to_be_returned[i] = satisfied[secondNumber] - satisfied[firstNumber - 1];
+        
+    }
+
+    return to_be_returned;
+}
 
 
 
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+
+    vector<string> strArr = {"aab", "bed", "awe", "bbbbbu" };
+    vector<string> query = {"2-3", "4-5"};
+    vector<int> temp = hasVowels(strArr, query);
+    
+    for (size_t i = 0; i < temp.size(); i++){
+        cout << temp[i] << endl;
+    }
+    
     return 0;
+
 }
 
 /*
@@ -49,7 +98,6 @@ int main(int argc, const char * argv[]) {
  bed
  awe
  bbbbbu
- 7
  2-3
  4-5
  Correct output: 1 1
